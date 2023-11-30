@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+</head>
+<body>
+ <label><b>Country Information:</b></label>
+ <br><br>
+ <table style="width: 100%; background-color: antiquewhite; border: 1px solid black;">
+   <thead style="background-color: cornflowerblue; color: white;">
+     <tr>
+       <th style="text-align: left;">Name</th>
+       <th style="text-align: left;">Popular Site</th>
+       <th style="text-align: left;">Capital</th>
+       <th style="text-align: left;">Population</th>
+       <th style="text-align: left;">Visited</th>
+       <th style="text-align: left;">Covid Level</th>
+       <th></th>
+       <th></th>
+     </tr>
+   </thead>
+   <tbody style="font-family: Arial; font-size: 9pt;">
+    <% for (let iCount = 0; iCount < mycountry.length; iCount++) { %>
+       <tr>
+         <td><%= mycountry[iCount].country_name %></td>
+         <td><%= mycountry[iCount].popular_site %></td>
+         <td><%= mycountry[iCount].capital %></td>
+         <td><%= mycountry[iCount].population %></td>
+         <td style="text-align: center;"><%= mycountry[iCount].visited %></td>
+         <td style="text-align: center;"><%= mycountry[iCount].covid_level %></td>
+         <td style="text-align: center;">
+           <form action="/editCountry/<%= mycountry[iCount].country_id %>" method="GET">
+             <button type="submit">Edit</button>
+           </form>
+         </td>
+         <td style="text-align: center;">
+           <form action="/deleteCountry/<%= mycountry[iCount].country_id %>" method="POST">
+             <button type="submit">Delete</button>
+           </form>
+         </td>
+       </tr>
+    <% } %>
+   </tbody>
+ </table>
+ <br><br>
+ <form action="/addCountry" method="GET">
+   <button type="submit">Add Country</button>
+ </form>
+</body>
+</html>
+EXPLAIN EJS
+WRITE IN INDEX.JS
+app.get("/addCountry", (req, res) => {
+ res.render("addCountry");
+})
+app.post("/addCountry", (req, res)=> {
+ knex("country").insert({
+   country_name: req.body.country_name.toUpperCase(),
+   popular_site: req.body.popular_site.toUpperCase(),
+   capital: req.body.capital.toUpperCase(),
+   population: req.body.population,
+   visited: req.body.visited ? "Y" : "N",
+   covid_level: req.body.covid_level.toUpperCase()
+}).then(mycountry => {
+   res.redirect("/");
+})
+});
+ADDCOUNTRY.HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+</head>
+<body>
+ <form action="/addCountry" method="POST">
+   <fieldset style="width: 0px;">
+     <legend>Add a Country:</legend>
+     <label for="country_name">Enter Country Name:</label>
+     <input type="text" id="country_name" name="country_name">
+     <br><br>
+     <label for="popular_site">Enter Popular Site:</label>
+     <input type="text" id="popular_site" name="popular_site">
+     <br><br>
+     <label for="capital">Enter Capital:</label>
+     <input type="text" id="capital" name="capital">
+     <br><br>
+     <label for="population">Enter Population:</label>
+     <input type="number" id="population" name="population">
+     <br><br>
+     <label for="visited">Visited (Y/N):</label>
+     <input type="checkbox" id="visited" name="visited">
+     <br><br>
+     <fieldset style="width: 100 px;">
+       <legend>Covid Level:</legend>
+       <input type="radio" id="covid_high" name="covid_level" value="H" >
+       <label for="covid_high">High</label><br>
+       <input type="radio" id="covid_medium" name="covid_level" value="M" >
+       <label for="covid_high">Medium</label><br>
+       <input type="radio" id="covid_low" name="covid_level" value="L" >
+       <label for="covid_high">Low</label><br>
+     </fieldset>
+   </fieldset>
+   <button type="submit">Save</button>
+ </form>
+</body>
+</html>

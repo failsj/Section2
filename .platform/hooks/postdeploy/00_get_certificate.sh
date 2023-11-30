@@ -1,0 +1,1 @@
+sudo certbot -n -d jakefails.us-east-1.elasticbeanstalk.com --nginx --agree-tos --email jacobfails12@gmail.com
